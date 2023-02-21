@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HealthAttachment : MonoBehaviour
 {
+    public DoorBehavior progression;
     public SpriteModifier modifier;
 
     public int maxHealth = 1;
@@ -34,12 +35,33 @@ public class HealthAttachment : MonoBehaviour
         health -= 1;
         if(health <= 0)
         {
+            DropItems drops = GetComponent<DropItems>();
+            if(drops != null)
+            {
+                drops.SpawnDrops();
+            }
+            if(progression != null)
+            {
+                progression.RemoveSelf(this);
+            }
             Destroy(gameObject);
         }
         else if (spriteDictionary.ContainsKey(health))
         {
-            modifier.spriteRenderer.sprite = spriteDictionary[health];
+            if(modifier != null)
+            {
+                modifier.spriteRenderer.sprite = spriteDictionary[health];
+            }
+            else
+            {
+                GetComponent<SpriteRenderer>().sprite = spriteDictionary[health];
+            }
+            
         }
-        modifier.GlitchSprite();
+        if(modifier != null)
+        {
+            modifier.GlitchSprite();
+        }
+        
     }
 }

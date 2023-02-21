@@ -32,6 +32,5 @@ public class SpriteModifier : MonoBehaviour
         }
         transform.localPosition = Vector3.zero;
         spriteRenderer.color = Color.white;
-
     }
 }

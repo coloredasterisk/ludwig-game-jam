@@ -13,9 +13,23 @@ public class AttackHitBox : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.GetComponent<HealthAttachment>() != null)
+        if (collision.GetComponent<HealthAttachment>() != null)
         {
+            if (collision.GetComponent<Rigidbody2D>())
+            {
+
+                Vector3 lookVector = collision.transform.position - transform.position;
+                collision.GetComponent<Rigidbody2D>().AddForce(lookVector * 25, ForceMode2D.Impulse);
+            }
             collision.GetComponent<HealthAttachment>().TakeDamage();
+
+        } else if(collision.GetComponent<ShopAttachment>() != null)
+        {
+            
+            collision.GetComponent<ShopAttachment>().SellItem();
+        } else if(collision.GetComponent<ProjectileBehavior>() != null)
+        {
+            collision.GetComponent<Rigidbody2D>().velocity *= -1;
         }
     }
 }
