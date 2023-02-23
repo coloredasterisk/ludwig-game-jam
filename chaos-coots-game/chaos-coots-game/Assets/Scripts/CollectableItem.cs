@@ -6,11 +6,17 @@ public enum CollectType
 {
     Fish,
     Life,
+    AttackSpeed,
+    DashCooldown,
+    Damage,
 };
 
 public class CollectableItem : MonoBehaviour
 {
+    private float currentDegree = 0;
+    private float spinMultipler = 150;
     public int value;
+    public float magnetSpeed = 1;
     public CollectType type;
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -18,6 +24,13 @@ public class CollectableItem : MonoBehaviour
         {
             Collect(collision);
         }
+    }
+    private void Update()
+    {
+        currentDegree += Time.deltaTime * spinMultipler;
+        transform.rotation = Quaternion.Euler(0, currentDegree, 0);
+
+        transform.position += (GameManager.Instance.player.transform.position - transform.position).normalized * Time.deltaTime * magnetSpeed;
     }
 
     public void Collect(Collider2D collision)
@@ -32,6 +45,18 @@ public class CollectableItem : MonoBehaviour
         {
             collision.GetComponent<PlayerController>().health += value;
             CanvasReference.Instance.CreateLife();
+        }
+        else if (type == CollectType.AttackSpeed)
+        {
+            collision.GetComponent<PlayerController>().attackCooldown /= 2;
+        }
+        else if (type == CollectType.DashCooldown)
+        {
+            collision.GetComponent<PlayerController>().dashCooldown /= 2;
+        }
+        else if(type == CollectType.Damage)
+        {
+            collision.GetComponent<PlayerController>().attackDamage += 1;
         }
         Destroy(gameObject);
 

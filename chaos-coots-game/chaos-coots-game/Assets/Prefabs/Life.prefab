@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4088745499219920237}
   - component: {fileID: 3797170821296783295}
   - component: {fileID: 7405676766279130978}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Life
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 1
+  magnetSpeed: 0
   type: 1
 --- !u!58 &7405676766279130978
 CircleCollider2D:

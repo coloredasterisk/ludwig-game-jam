@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AttackHitBox : MonoBehaviour
 {
+    public int damage;
     public BoxCollider2D hitbox;
     // Start is called before the first frame update
     void Start()
@@ -21,7 +22,7 @@ public class AttackHitBox : MonoBehaviour
                 Vector3 lookVector = collision.transform.position - transform.position;
                 collision.GetComponent<Rigidbody2D>().AddForce(lookVector * 25, ForceMode2D.Impulse);
             }
-            collision.GetComponent<HealthAttachment>().TakeDamage();
+            collision.GetComponent<HealthAttachment>().TakeDamage(damage);
 
         } else if(collision.GetComponent<ShopAttachment>() != null)
         {

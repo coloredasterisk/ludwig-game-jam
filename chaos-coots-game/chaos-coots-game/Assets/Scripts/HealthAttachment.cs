@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class HealthAttachment : MonoBehaviour
 {
-    public DoorBehavior progression;
+    public GameObject emptySprite;
+
+    public List<DoorBehavior> progression;
     public SpriteModifier modifier;
 
     public int maxHealth = 1;
@@ -21,8 +23,8 @@ public class HealthAttachment : MonoBehaviour
 
     private void Start()
     {
-        
-        maxHealth = health;
+
+        health = maxHealth;
 
         foreach(SpriteValues spriteValues in healthSprites)
         {
@@ -30,21 +32,40 @@ public class HealthAttachment : MonoBehaviour
         }
     }
 
-    public void TakeDamage()
+    public void TakeDamage(int damage)
     {
-        health -= 1;
+        health -= damage;
         if(health <= 0)
         {
-            DropItems drops = GetComponent<DropItems>();
-            if(drops != null)
+            if(maxHealth > 0)
             {
-                drops.SpawnDrops();
+                maxHealth = 0;
+                DropItems drops = GetComponent<DropItems>();
+                if (drops != null)
+                {
+                    drops.SpawnDrops();
+                }
+                if (progression != null && progression.Count > 0)
+                {
+                    foreach (DoorBehavior door in progression)
+                    {
+                        if (door != null)
+                        {
+                            door.RemoveSelf(this);
+                        }
+
+                    }
+
+                }
+                GetComponent<Rigidbody2D>().simulated = false;
+                if (GetComponent<BoxCollider2D>()) { GetComponent<BoxCollider2D>().enabled = false;}
+                else if (GetComponent<CircleCollider2D>()){ GetComponent<CircleCollider2D>().enabled = false;}
+                else if (GetComponent<CapsuleCollider2D>()){ GetComponent<CapsuleCollider2D>().enabled = false; }
+                StartCoroutine(CrashSprite());
+                
             }
-            if(progression != null)
-            {
-                progression.RemoveSelf(this);
-            }
-            Destroy(gameObject);
+            
+            
         }
         else if (spriteDictionary.ContainsKey(health))
         {
@@ -63,5 +84,26 @@ public class HealthAttachment : MonoBehaviour
             modifier.GlitchSprite();
         }
         
+    }
+
+    public IEnumerator CrashSprite()
+    {
+        for (int i = 1; i <= 10; i++)
+        {
+            GameObject emptyClone = Instantiate(emptySprite, transform);
+            emptyClone.transform.position = transform.position + new Vector3(0.1f * i, -0.1f * i);
+            if(modifier != null)
+            {
+                emptyClone.GetComponent<SpriteRenderer>().sprite = modifier.spriteRenderer.sprite;
+            }
+            else
+            {
+                emptyClone.GetComponent<SpriteRenderer>().sprite = GetComponent<SpriteRenderer>().sprite;
+            }
+            
+            emptyClone.GetComponent<SpriteRenderer>().sortingOrder = i + 1;
+            yield return new WaitForSeconds(0.03f);
+        }
+        Destroy(gameObject);
     }
 }

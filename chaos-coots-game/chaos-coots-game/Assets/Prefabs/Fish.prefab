@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3797170821296783295}
   - component: {fileID: 7405676766279130978}
   - component: {fileID: -3618921848100656147}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fish
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 1
+  magnetSpeed: 1
   type: 0
 --- !u!58 &7405676766279130978
 CircleCollider2D:

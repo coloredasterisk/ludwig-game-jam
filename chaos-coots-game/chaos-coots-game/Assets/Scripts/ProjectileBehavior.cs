@@ -4,31 +4,42 @@ using UnityEngine;
 
 public class ProjectileBehavior : MonoBehaviour
 {
-
-    // Start is called before the first frame update
-    void Start()
+    public float lifeTime = 0;
+    public float maxLife = 10;
+    private void Update()
     {
-        
+        lifeTime += Time.deltaTime;
+        if(lifeTime > maxLife)
+        {
+            Destroy(gameObject);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.GetComponent<PlayerController>())
+        if (collision.gameObject.CompareTag("Player"))
         {
             collision.gameObject.GetComponent<PlayerController>().TakeDamage();
         }
-        else if (collision.gameObject.CompareTag("Enemy"))
+        else if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Ranged"))
         {
-            collision.gameObject.GetComponent<HealthAttachment>().TakeDamage();
+            collision.gameObject.GetComponent<HealthAttachment>().TakeDamage(1);
         }
 
         Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<PlayerController>().TakeDamage();
+        }
+        else if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Ranged"))
+        {
+            collision.gameObject.GetComponent<HealthAttachment>().TakeDamage(1);
+        }
     }
 
 }

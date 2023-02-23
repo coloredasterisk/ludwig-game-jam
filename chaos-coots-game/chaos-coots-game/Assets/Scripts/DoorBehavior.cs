@@ -10,7 +10,7 @@ public class DoorBehavior : MonoBehaviour
     {
         foreach(HealthAttachment defeat in defeatEnemies)
         {
-            defeat.progression = this;
+            defeat.progression.Add(this);
         }
     }
 

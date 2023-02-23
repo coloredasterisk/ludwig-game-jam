@@ -9,6 +9,7 @@ public class CanvasReference : MonoBehaviour
     public TextMeshProUGUI currencyText;
     public GameObject listOfLives;
     public GameObject lifePrefab;
+    public GameObject crashWindow;
 
     private void Start()
     {
