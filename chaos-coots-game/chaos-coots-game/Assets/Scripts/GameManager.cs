@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public GameObject initialTrigger;
+    public GameObject userInterface;
 
     public static GameManager Instance;
     public Transform currentCameraTarget;
@@ -18,6 +19,10 @@ public class GameManager : MonoBehaviour
     private float distortValue = 0;
     private float distortHoldTime = 1;
     private float distortCurrentTime = 0;
+
+    public float timer = 0;
+
+    public bool playing = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,47 +32,58 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(initialTrigger.activeSelf == false)
+        if (playing)
         {
-            if (Input.anyKeyDown)
+            
+            if (initialTrigger.activeSelf == false)
             {
-                initialTrigger.SetActive(true);
-            }
-        }
-        if(player.health <= -50)
-        {
-            if (Input.anyKeyDown)
-            {
-                if(!Input.GetKeyDown(KeyCode.LeftAlt) && !Input.GetKeyDown(KeyCode.RightAlt) && !Input.GetKeyDown(KeyCode.F4))
+                if (Input.anyKeyDown)
                 {
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-                    Time.timeScale = 1;
+                    initialTrigger.SetActive(true);
+                    userInterface.SetActive(true);
                 }
-                
             }
-        }
-        if(distortValue > 0)
-        {
-            if(distortCurrentTime > 0)
+            if (player.health <= -50)
             {
-                distortCurrentTime -= Time.deltaTime;
+                if (Input.anyKeyDown)
+                {
+                    if (!Input.GetKeyDown(KeyCode.LeftAlt) && !Input.GetKeyDown(KeyCode.RightAlt) && !Input.GetKeyDown(KeyCode.F4))
+                    {
+                        DataManager.soundEffects.Clear();
+                        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                        Time.timeScale = 1;
+                    }
+
+                }
             }
             else
             {
-                distortValue -= Time.deltaTime * 10;
-                if(distortValue < 0)
+                timer += Time.deltaTime;
+            }
+            if (distortValue > 0)
+            {
+                if (distortCurrentTime > 0)
                 {
-                    distortValue = 0;
+                    distortCurrentTime -= Time.deltaTime;
                 }
-                volume.weight = distortValue;
+                else
+                {
+                    distortValue -= Time.deltaTime * 10;
+                    if (distortValue < 0)
+                    {
+                        distortValue = 0;
+                    }
+                    volume.weight = distortValue;
+                }
             }
         }
+        
     }
 
-    public void ChangeTarget(Transform position, float radius)
+    public void ChangeTarget(Transform position, float radius, float weight)
     {
         targetGroup.RemoveMember(currentCameraTarget);
-        targetGroup.AddMember(position, 2, radius);
+        targetGroup.AddMember(position, weight, radius);
         currentCameraTarget = position;
     }
     public void CameraDistortion()

@@ -12,6 +12,11 @@ public class HealthAttachment : MonoBehaviour
     public int maxHealth = 1;
     public int health = 1;
 
+    public AudioSource audioSource;
+    public List<AudioClip> soundEffects; //0 death sounds //1 take damage sounds
+
+
+
     public List<SpriteValues> healthSprites;
     public Dictionary<int, Sprite> spriteDictionary = new Dictionary<int, Sprite>();
 
@@ -23,7 +28,8 @@ public class HealthAttachment : MonoBehaviour
 
     private void Start()
     {
-
+        audioSource = GetComponent<AudioSource>();
+        DataManager.AddSoundEffect(audioSource);
         health = maxHealth;
 
         foreach(SpriteValues spriteValues in healthSprites)
@@ -55,8 +61,11 @@ public class HealthAttachment : MonoBehaviour
                         }
 
                     }
-
                 }
+                
+                
+                
+
                 GetComponent<Rigidbody2D>().simulated = false;
                 if (GetComponent<BoxCollider2D>()) { GetComponent<BoxCollider2D>().enabled = false;}
                 else if (GetComponent<CircleCollider2D>()){ GetComponent<CircleCollider2D>().enabled = false;}
@@ -82,14 +91,21 @@ public class HealthAttachment : MonoBehaviour
         if(modifier != null)
         {
             modifier.GlitchSprite();
+            if(health > 0)
+            {
+                audioSource.PlayOneShot(soundEffects[1]);
+            }
         }
         
     }
 
     public IEnumerator CrashSprite()
     {
+        audioSource.clip = soundEffects[0]; //crash sound
+        
         for (int i = 1; i <= 10; i++)
         {
+            audioSource.Play();
             GameObject emptyClone = Instantiate(emptySprite, transform);
             emptyClone.transform.position = transform.position + new Vector3(0.1f * i, -0.1f * i);
             if(modifier != null)

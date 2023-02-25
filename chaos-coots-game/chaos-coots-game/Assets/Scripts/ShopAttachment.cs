@@ -12,7 +12,8 @@ public class ShopAttachment : MonoBehaviour
     public TextMeshProUGUI descriptionText;
     public RectTransform background;
     
-
+    public AudioSource audioSource;
+    public List<AudioClip> soundEffect;
 
     public List<ShopItem> shopItems;
     [System.Serializable] public struct ShopItem
@@ -42,6 +43,9 @@ public class ShopAttachment : MonoBehaviour
         item.prefab = shopItem.dropPrefab;
         item.count = shopItem.count;
         dropItems.ItemDrops.Add(item);
+
+        audioSource = GetComponent<AudioSource>();
+        DataManager.AddSoundEffect(audioSource);
     }
 
     public void SellItem()
@@ -58,12 +62,14 @@ public class ShopAttachment : MonoBehaviour
         }
         else
         {
+
             StartCoroutine(NotEnough());
         }
     }
 
     public IEnumerator NotEnough()
     {
+        audioSource.PlayOneShot(soundEffect[0]);
         descriptionDisplay.SetActive(false);
         GetComponent<SpriteRenderer>().color = Color.red;
         yield return new WaitForSeconds(0.5f);

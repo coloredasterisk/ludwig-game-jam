@@ -73,11 +73,16 @@ public class LaserBehavior : MonoBehaviour
 
     public IEnumerator PrepareToShoot()
     {
+        
+
         currentTime = shootInterval + recordTime;
         recordedPosition = GameManager.Instance.player.transform.position;
         //spriteRenderer.color = Color.red;
         animator.SetBool("shooting", true);
         yield return new WaitForSeconds(recordTime/2);
+        HealthAttachment soundSource = GetComponent<HealthAttachment>();
+        soundSource.audioSource.PlayOneShot(soundSource.soundEffects[2]);
+
         animator.SetBool("shooting", false);
         yield return new WaitForSeconds(recordTime/2);
         ShootLaser();
@@ -88,11 +93,11 @@ public class LaserBehavior : MonoBehaviour
 
     public void ShootLaser()
     {
+        
         Vector3 playerPos = recordedPosition;
         Vector3 towardsPlayer = (playerPos - gameObject.transform.position).normalized;
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, towardsPlayer, Mathf.Infinity, 9);
-        
 
         if(hit.collider != null)
         {

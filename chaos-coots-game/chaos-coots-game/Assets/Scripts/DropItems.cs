@@ -22,7 +22,7 @@ public class DropItems : MonoBehaviour
                 GameObject drop = Instantiate(item.prefab, transform.position, Quaternion.identity);
                 if (drop.GetComponent<Rigidbody2D>() != null)
                 {
-                    Vector3 movement = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0) * Random.Range(5,10);
+                    Vector3 movement = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0) * Random.Range(25,50);
                     drop.GetComponent<Rigidbody2D>().AddForce(movement, ForceMode2D.Impulse);
                 }
                 

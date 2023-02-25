@@ -50,6 +50,9 @@ public class ShooterBehavior : MonoBehaviour
 
     public IEnumerator AnimateShooting()
     {
+        HealthAttachment soundSource = GetComponent<HealthAttachment>();
+        soundSource.audioSource.PlayOneShot(soundSource.soundEffects[2]);
+
         currentTime = shootInterval + 0.3f;
         animator.SetInteger("state", 3);
         yield return new WaitForSeconds(0.1f);

@@ -76,6 +76,10 @@ public class DasherBehavior : MonoBehaviour
         movementController.enabled = false;
         animator.SetBool("dashing", true);
         yield return new WaitForSeconds(recordTime/2);
+
+        HealthAttachment soundSource = GetComponent<HealthAttachment>();
+        soundSource.audioSource.PlayOneShot(soundSource.soundEffects[2]);
+
         animator.SetBool("dashing", false);
         yield return new WaitForSeconds(recordTime/2);
         Dash();

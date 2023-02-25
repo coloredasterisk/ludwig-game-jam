@@ -24,8 +24,11 @@ public class PlayerController : MonoBehaviour
     public bool isDashing = false;
     public bool isAttacking = false;
 
-    private static float ANIMATE_RUN = 0.25f;
-    private static float ANIMATE_STOP = 0.05f;
+    public AudioSource catSource;
+    public List<AudioClip> soundEffects; //0 crash, 1 attack, 2 hurt, 3 dash
+
+    private static float ANIMATE_RUN = 0.5f;
+    private static float ANIMATE_STOP = 0.025f;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,69 +36,76 @@ public class PlayerController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
 
-        for(int i = 0; i < health; i++)
-        {
-            CanvasReference.Instance.CreateLife();
-        }
+        catSource = GetComponent<AudioSource>();
+        DataManager.AddSoundEffect(catSource);
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(health > 0)
+        if (GameManager.Instance.playing)
         {
-            direction = Vector2.zero;
-            if (Input.GetKey(KeyCode.W))
+            if (health > 0)
             {
-                direction += new Vector2(0, 1);
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                direction += new Vector2(0, -1);
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                direction += new Vector2(-1, 0);
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                direction += new Vector2(1, 0);
-            }
-            if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.LeftShift)) && !isDashing)
-            {
-                StartCoroutine(DashCooldown());
-            }
-            else
-            {
-                playerRB.AddForce(direction * movementSpeed * Time.deltaTime, ForceMode2D.Impulse);
+                animator.SetFloat("moveX", 0);
+                animator.SetFloat("moveY", 0);
+                direction = Vector2.zero;
+                if (Input.GetKey(KeyCode.W))
+                {
+                    direction += new Vector2(0, 1);
+                    animator.SetFloat("moveY", 1);
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    direction += new Vector2(0, -1);
+                    animator.SetFloat("moveY", animator.GetFloat("moveY")-1);
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    direction += new Vector2(-1, 0);
+                    animator.SetFloat("moveX", -1);
+                }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    direction += new Vector2(1, 0);
+                    animator.SetFloat("moveX", animator.GetFloat("moveX") + 1);
+                }
+                if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.LeftShift)) && !isDashing)
+                {
+                    StartCoroutine(DashCooldown());
+                }
+                else
+                {
+                    playerRB.AddForce(direction * movementSpeed * Time.deltaTime, ForceMode2D.Impulse);
+                }
+
+                if (Input.GetMouseButtonDown(0) && !isAttacking)
+                {
+                    StartCoroutine(AttackCooldown());
+                }
             }
 
-            if (Input.GetMouseButtonDown(0) && !isAttacking)
+
+
+            if (Mathf.Abs(playerRB.velocity.x) > 0.01 || Mathf.Abs(playerRB.velocity.y) > 0.01)
             {
-                StartCoroutine(AttackCooldown());
+                lastDirection = playerRB.velocity;
             }
         }
         
-        
-
-        if(Mathf.Abs(playerRB.velocity.x) > 0.01 || Mathf.Abs(playerRB.velocity.y) > 0.01)
-        {
-            lastDirection = playerRB.velocity;
-        }
     }
 
     private void FixedUpdate()
     {
-
-        animator.SetFloat("moveX", lastDirection.x);
-        animator.SetFloat("moveY", lastDirection.y);
-
-        attackArea.transform.right = new Vector3(lastDirection.x, lastDirection.y, 0).normalized*100 +transform.localPosition - attackHitBox.transform.localPosition;
+        attackArea.transform.right = new Vector3(lastDirection.x, lastDirection.y, 0).normalized*10000 +transform.localPosition - attackHitBox.transform.localPosition;
     }
 
     public IEnumerator DashCooldown()
     {
         isDashing = true;
+        catSource.PlayOneShot(soundEffects[3]);
         StartCoroutine(InvincibleTime(0.3f));
         playerRB.velocity = direction * dashSpeed;
         yield return new WaitForSeconds(dashCooldown);
@@ -103,6 +113,9 @@ public class PlayerController : MonoBehaviour
     }
     public IEnumerator AttackCooldown()
     {
+        //attack sound
+        catSource.PlayOneShot(soundEffects[1]);
+
         isAttacking = true;
         GameObject hitBox = Instantiate(attackHitBox, attackHitBox.transform.position, attackArea.transform.rotation);
         hitBox.GetComponent<AttackHitBox>().damage = attackDamage;
@@ -174,9 +187,16 @@ public class PlayerController : MonoBehaviour
             health -= 1;
             if (health == 0)
             {
+                DataManager.time = GameManager.Instance.timer;
                 StartCoroutine(CrashSprite());
-                
+
             }
+            else
+            {
+                catSource.PlayOneShot(soundEffects[2]);
+            }
+            
+
             GameManager.Instance.CameraDistortion();
             CanvasReference.Instance.RemoveLife();
             StartCoroutine(InvincibleTime(1f));
@@ -192,16 +212,21 @@ public class PlayerController : MonoBehaviour
     }
     public IEnumerator CrashSprite()
     {
+        catSource.clip = soundEffects[0]; //crash sound
+
         Time.timeScale = 0.001f; //almost paused
         for (int i = 1; i <= 30; i++)
         {
+            catSource.Play();
             GameObject emptyClone = Instantiate(emptySprite);
             emptyClone.transform.position = transform.position + new Vector3(0.1f*i, -0.1f*i);
             emptyClone.GetComponent<SpriteRenderer>().sprite = spriteRenderer.sprite;
             emptyClone.GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             yield return new WaitForSeconds(0.00003f);
         }
-        CanvasReference.Instance.crashWindow.SetActive(true);
+        CanvasReference.Instance.ShowCrashScreen();
+        
+        catSource.Stop();
         health -= 100;
         
         

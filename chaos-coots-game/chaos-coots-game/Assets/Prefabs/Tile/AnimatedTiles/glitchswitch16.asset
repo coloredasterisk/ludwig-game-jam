@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: glitchswitch16
   m_EditorClassIdentifier: 
   m_AnimatedSprites:
-  - {fileID: -293205867, guid: a2d4077c6bf10264185b5fab32adf4ee, type: 3}
+  - {fileID: 21300000, guid: e2e64009aef1b68488f2cfefa6ee4dd8, type: 3}
   - {fileID: -1776365049, guid: 56e07263499b92b4fa870b8e962c501f, type: 3}
   m_MinSpeed: 1
   m_MaxSpeed: 1

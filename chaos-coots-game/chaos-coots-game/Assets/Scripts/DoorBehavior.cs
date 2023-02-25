@@ -5,6 +5,7 @@ using UnityEngine;
 public class DoorBehavior : MonoBehaviour
 {
     public List<HealthAttachment> defeatEnemies;
+    public GameObject arrow;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +24,12 @@ public class DoorBehavior : MonoBehaviour
         if(defeatEnemies.Count == 0)
         {
             gameObject.SetActive(false);
+            if(arrow != null)
+            {
+                arrow.SetActive(true);
+            }
+            
+
         }
     }
 

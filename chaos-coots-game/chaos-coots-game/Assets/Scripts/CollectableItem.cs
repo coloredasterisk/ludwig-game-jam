@@ -13,14 +13,22 @@ public enum CollectType
 
 public class CollectableItem : MonoBehaviour
 {
+    private bool collected = false;
     private float currentDegree = 0;
     private float spinMultipler = 150;
     public int value;
     public float magnetSpeed = 1;
     public CollectType type;
+    public AudioSource audioSource;
+    public List<AudioClip> soundEffects;
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+        DataManager.AddSoundEffect(audioSource);
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && !collected)
         {
             Collect(collision);
         }
@@ -35,6 +43,10 @@ public class CollectableItem : MonoBehaviour
 
     public void Collect(Collider2D collision)
     {
+        collected = true;
+        audioSource.PlayOneShot(soundEffects[0]);
+        GetComponent<SpriteRenderer>().color = Color.clear;
+
         if(type == CollectType.Fish)
         {
             DataManager.currency += value;
@@ -58,8 +70,14 @@ public class CollectableItem : MonoBehaviour
         {
             collision.GetComponent<PlayerController>().attackDamage += 1;
         }
-        Destroy(gameObject);
 
+        StartCoroutine(DelayCollect());
+    }
+
+    public IEnumerator DelayCollect()
+    {
+        yield return new WaitForSeconds(0.35f);
+        Destroy(gameObject);
     }
 
 }
