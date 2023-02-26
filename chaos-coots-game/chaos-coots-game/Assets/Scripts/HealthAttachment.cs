@@ -62,8 +62,15 @@ public class HealthAttachment : MonoBehaviour
 
                     }
                 }
-                
-                
+
+                if (CompareTag("Enemy") || CompareTag("Ranged"))
+                {
+                    DataManager.enemiesDestroyed += 1;
+                }
+                else
+                {
+                    DataManager.furnitureDestroyed += 1;
+                }
                 
 
                 GetComponent<Rigidbody2D>().simulated = false;

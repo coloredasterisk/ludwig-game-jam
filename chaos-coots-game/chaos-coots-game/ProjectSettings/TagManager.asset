@@ -8,6 +8,7 @@ TagManager:
   - Ranged
   - Barrier
   - Boss
+  - Silence
   layers:
   - Default
   - TransparentFX

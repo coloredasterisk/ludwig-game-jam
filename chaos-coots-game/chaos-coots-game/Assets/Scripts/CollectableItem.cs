@@ -30,7 +30,11 @@ public class CollectableItem : MonoBehaviour
     {
         if (collision.CompareTag("Player") && !collected)
         {
-            Collect(collision);
+            if (GameManager.Instance.playing)
+            {
+                Collect(collision);
+            }
+            
         }
     }
     private void Update()
@@ -49,6 +53,7 @@ public class CollectableItem : MonoBehaviour
 
         if(type == CollectType.Fish)
         {
+            DataManager.totalCurrency += value;
             DataManager.currency += value;
             CanvasReference.Instance.currencyText.text = "" + DataManager.currency;
             

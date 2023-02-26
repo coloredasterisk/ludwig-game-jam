@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.Instance.playing)
+        if (GameManager.Instance.playing && !GameManager.Instance.isPaused)
         {
             if (health > 0)
             {
@@ -188,6 +188,8 @@ public class PlayerController : MonoBehaviour
             if (health == 0)
             {
                 DataManager.time = GameManager.Instance.timer;
+                DataManager.fatalErrors += 1;
+                GameManager.Instance.music.Stop();
                 StartCoroutine(CrashSprite());
 
             }

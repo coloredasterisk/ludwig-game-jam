@@ -193,8 +193,8 @@ MonoBehaviour:
     descriptionWidth: 7.5
   - dropPrefab: {fileID: 8812757141031844398, guid: 55c9365ef420b614fa09bca53bf163bd, type: 3}
     count: 1
-    minCost: 33
-    maxCost: 66
+    minCost: 25
+    maxCost: 50
     description: Dash More
     descriptionWidth: 6
 --- !u!82 &-2685284088091490608
