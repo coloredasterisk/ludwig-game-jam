@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
     public void ConcludeGame()
     {
         playing = false;
-        audioSource.PlayOneShot(soundEffects[0]);
+        //audioSource.PlayOneShot(soundEffects[0]);
 
         string timeDisplay = CanvasReference.convertToTime(DataManager.time);
 
