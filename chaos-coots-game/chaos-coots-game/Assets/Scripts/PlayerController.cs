@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     public GameObject emptySprite;
+    public Camera mainCamera;
 
     public int attackDamage = 1;
     public GameObject attackArea;
@@ -49,6 +50,11 @@ public class PlayerController : MonoBehaviour
         {
             if (health > 0)
             {
+                Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+                mouseWorldPos.z = 0;
+                attackArea.transform.right = mouseWorldPos -transform.position;
+
+
                 animator.SetFloat("moveX", 0);
                 animator.SetFloat("moveY", 0);
                 direction = Vector2.zero;
@@ -88,18 +94,12 @@ public class PlayerController : MonoBehaviour
             }
 
 
-
             if (Mathf.Abs(playerRB.velocity.x) > 0.01 || Mathf.Abs(playerRB.velocity.y) > 0.01)
             {
                 lastDirection = playerRB.velocity;
             }
         }
         
-    }
-
-    private void FixedUpdate()
-    {
-        attackArea.transform.right = new Vector3(lastDirection.x, lastDirection.y, 0).normalized*10000 +transform.localPosition - attackHitBox.transform.localPosition;
     }
 
     public IEnumerator DashCooldown()
@@ -201,7 +201,7 @@ public class PlayerController : MonoBehaviour
 
             GameManager.Instance.CameraDistortion();
             CanvasReference.Instance.RemoveLife();
-            StartCoroutine(InvincibleTime(1f));
+            StartCoroutine(InvincibleTime(1.5f));
         }
 
     }
@@ -209,7 +209,14 @@ public class PlayerController : MonoBehaviour
     public IEnumerator InvincibleTime(float time)
     {
         invincible = true;
-        yield return new WaitForSeconds(time);
+        for(float i = 0; i < time; i += 0.25f)
+        {
+            spriteRenderer.color = Color.cyan;
+            yield return new WaitForSeconds(0.125f);
+            spriteRenderer.color = Color.white;
+            yield return new WaitForSeconds(0.125f);
+        }
+        
         invincible = false;
     }
     public IEnumerator CrashSprite()

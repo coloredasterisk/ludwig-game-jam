@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3868122902069684836
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4143246734979918687}
+  - component: {fileID: 6378629669308913949}
+  m_Layer: 0
+  m_Name: ShopGroup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4143246734979918687
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3868122902069684836}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6378629669308913949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3868122902069684836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a6ea7d285ae42d4c91827db16179780, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shopItems:
+  - dropPrefab: {fileID: 8812757141031844398, guid: 85014025076876e4a8301e1606e5f4dd, type: 3}
+    count: 3
+    minCost: 15
+    maxCost: 33
+    description: +3 Lives
+    descriptionWidth: 4.5
+  - dropPrefab: {fileID: 8812757141031844398, guid: 9b317d236f5271248aaf18750950c8d3, type: 3}
+    count: 1
+    minCost: 50
+    maxCost: 75
+    description: Attack Faster
+    descriptionWidth: 7.5
+  - dropPrefab: {fileID: 8812757141031844398, guid: 9f34102f9badb2048bb61ad35fdd30c6, type: 3}
+    count: 1
+    minCost: 66
+    maxCost: 99
+    description: More Damage
+    descriptionWidth: 7.5
+  - dropPrefab: {fileID: 8812757141031844398, guid: 55c9365ef420b614fa09bca53bf163bd, type: 3}
+    count: 1
+    minCost: 25
+    maxCost: 50
+    description: Dash More
+    descriptionWidth: 6
+  shops:
+  - {fileID: 0}
+  - {fileID: 0}

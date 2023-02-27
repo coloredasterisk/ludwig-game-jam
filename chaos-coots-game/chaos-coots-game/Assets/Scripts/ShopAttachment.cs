@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static ShopGroup;
 
 public class ShopAttachment : MonoBehaviour
 {
@@ -15,22 +16,16 @@ public class ShopAttachment : MonoBehaviour
     public AudioSource audioSource;
     public List<AudioClip> soundEffect;
 
-    public List<ShopItem> shopItems;
-    [System.Serializable] public struct ShopItem
-    {
-        public GameObject dropPrefab;
-        public int count;
-        public int minCost;
-        public int maxCost;
-        public string description;
-        public float descriptionWidth;
-    }
+    
     // Start is called before the first frame update
     void Start()
     {
-        int index = Random.Range(0, shopItems.Count);
-        ShopItem shopItem = shopItems[index];
+        audioSource = GetComponent<AudioSource>();
+        DataManager.AddSoundEffect(audioSource);
+    }
 
+    public void Initialize(ShopItem shopItem)
+    {
         currentCost = Random.Range(shopItem.minCost, shopItem.maxCost);
         textDisplay.text = "" + currentCost;
         background.sizeDelta = new Vector2(shopItem.descriptionWidth, 1);
@@ -43,9 +38,6 @@ public class ShopAttachment : MonoBehaviour
         item.prefab = shopItem.dropPrefab;
         item.count = shopItem.count;
         dropItems.ItemDrops.Add(item);
-
-        audioSource = GetComponent<AudioSource>();
-        DataManager.AddSoundEffect(audioSource);
     }
 
     public void SellItem()
@@ -56,6 +48,7 @@ public class ShopAttachment : MonoBehaviour
             CanvasReference.Instance.currencyText.text = "" + DataManager.currency;
             if (dropItems != null)
             {
+                //Debug.Log("test");
                 dropItems.SpawnDrops();
             }
             Destroy(gameObject);

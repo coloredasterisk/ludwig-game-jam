@@ -32,6 +32,8 @@ public class BossBehavior : MonoBehaviour
     public bool sequence = false;
     public float barTimer = 0f;
 
+    public List<int> showAtLeast = new List<int>() { 0,1,2,3};
+
     // Start is called before the first frame update
     void Start()
     {
@@ -62,19 +64,36 @@ public class BossBehavior : MonoBehaviour
 
             if (currentHealth > 2 * maxHealth / 3)
             {
-                int random = Random.Range(0, 5);
-                switch (random)
+                if(showAtLeast.Count > 0)
                 {
-                    case 0: StartCoroutine(SpawnPellets(Random.Range(1, 3))); break;
-                    case 1: StartCoroutine(SpawnLasers(Random.Range(2, 4), 1.5f)); break;
-                    case 2: StartCoroutine(Summon(Random.Range(1,3))); break;
-                    case 3: StartCoroutine(OrderedAttack(Random.Range(2,4), true)); break;
+                    int index = Random.Range(0, showAtLeast.Count);
+                    int random = showAtLeast[index];
+                    showAtLeast.RemoveAt(index);
+                    switch (random)
+                    {
+                        case 0: StartCoroutine(SpawnPellets(2)); break;
+                        case 1: StartCoroutine(SpawnLasers(2, 1.5f)); break;
+                        case 2: StartCoroutine(Summon(2)); break;
+                        case 3: StartCoroutine(OrderedAttack(2, true)); break;
+                    }
                 }
+                else
+                {
+                    int random = Random.Range(0, 4);
+                    switch (random)
+                    {
+                        case 0: StartCoroutine(SpawnPellets(Random.Range(1, 3))); break;
+                        case 1: StartCoroutine(SpawnLasers(Random.Range(2, 4), 1.5f)); break;
+                        case 2: StartCoroutine(Summon(Random.Range(1, 3))); break;
+                        case 3: StartCoroutine(OrderedAttack(Random.Range(2, 4), true)); break;
+                    }
+                }
+                
             }
-            else if (currentHealth > maxHealth / 3)
+            else if (currentHealth > maxHealth / 3) //two thirds
             {
 
-                int random = Random.Range(0, 5);
+                int random = Random.Range(0, 4);
                 switch (random)
                 {
                     case 0: StartCoroutine(SpawnPellets(Random.Range(2, 4))); break;
@@ -83,10 +102,10 @@ public class BossBehavior : MonoBehaviour
                     case 3: StartCoroutine(OrderedAttack(Random.Range(2, 5), true)); break;
                 }
             }
-            else if (currentHealth > 0)
+            else if (currentHealth > 0) //final third
             {
 
-                int random = Random.Range(0, 5);
+                int random = Random.Range(0, 4);
                 switch (random)
                 {
                     case 0: StartCoroutine(PelletOnce()); break;
@@ -132,13 +151,13 @@ public class BossBehavior : MonoBehaviour
                 if (pos == 0)
                 {
                     orders.Add(false);
-                    animator.SetBool("Left", true);
+                    animator.SetBool("Right", true);
                     //Debug.Log("Go Right");
                 }
                 else
                 {
                     orders.Add(true);
-                    animator.SetBool("Right", true);
+                    animator.SetBool("Left", true);
                     //Debug.Log("Go Left");
                 }
                 animator.SetBool("Warning", false);
@@ -286,7 +305,7 @@ public class BossBehavior : MonoBehaviour
 
         } else if(currentHealth > 0)
         {
-            cooldown = 0.25f;
+            cooldown = 0.1f;
             CanvasReference.Instance.bossBarColor.color = Color.red;
         }
 
@@ -380,17 +399,17 @@ public class BossBehavior : MonoBehaviour
             int pos = Random.Range(0, 2);
             if (pos == 0)
             {
-                animator.SetBool("Left", true);
+                animator.SetBool("Right", true);
             }
             else
             {
-                animator.SetBool("Right", true);
+                animator.SetBool("Left", true);
             }
             yield return new WaitForSeconds(0.85f);
             if (!alive) yield break;
             animator.SetBool("Left", false);
             animator.SetBool("Right", false);
-            yield return new WaitForSeconds(0.6f);
+            yield return new WaitForSeconds(1f);
             if (!alive) yield break;
             Vector3 spawnPosition = Vector3.zero;
             if (pos == 1)
